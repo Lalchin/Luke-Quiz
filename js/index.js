@@ -12,7 +12,7 @@
       2. Add an Event listener for the submit button, which will display the score and highlight 
          the correct answers when the button is clicked. Use the code from lines 67 to 86 to help you.
 
-      3. Add 2 more questions to the app (each question must have 4 options).
+      3. Add 2 more questions to the app (each question must have 4 options). YES
 
       4. Reload the page when the reset button is clicked (hint: search window.location)
 
@@ -25,6 +25,26 @@ window.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#quizBlock').style.display = 'block';
     start.style.display = 'none';
   });
+
+    // Countdown timer
+    const countdownTimer = document.querySelector('#time');
+    let remainingTime = 60;
+  
+    const updateTimer = () => {
+      const minutes = Math.floor(remainingTime / 60);
+      const seconds = remainingTime % 60;
+      countdownTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      if (remainingTime === 0) {
+        clearInterval(timerInterval);
+        endQuiz();
+      } else {
+          remainingTime--;
+        }
+    };
+  
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+
   // quizArray QUESTIONS & ANSWERS
   // q = QUESTION, o = OPTIONS, a = CORRECT ANSWER
   // Basic ideas from https://code-boxx.com/simple-javascript-quiz/
@@ -43,6 +63,16 @@ window.addEventListener('DOMContentLoaded', () => {
       q: 'What is the capital of Australia',
       o: ['Sydney', 'Canberra', 'Melbourne', 'Perth'],
       a: 1,
+    },
+    {
+      q: 'What is the smartest animal in the world?',
+      o: ['Chimpanzee', 'Dolphin', 'Monitor Lizard', 'Crow'],
+      a: 0,
+    },
+    {
+      q: 'Who is the inventor of the JavaScript programming language?',
+      o: ['Tim Berners-Lee', 'James Gosling', 'Brendan Eich', 'Margaret Hamilton'],
+      a: 2,
     },
   ];
 
@@ -76,15 +106,37 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (quizItem.a == i) {
           //change background color of li element here
+          liElement.style.backgroundColor = 'green';
         }
 
         if (radioElement.checked) {
           // code for task 1 goes here
+          if (quizItem.a == i) {
+            score++;
+          } else {
+              liElement.style.backgroundColor = 'red';
+          }
         }
       }
     });
+
+    return score;
   };
 
+  // Event listener for submit button
+  const submitButton = document.querySelector('#btnSubmit');
+  submitButton.addEventListener('click', function() {
+   const score = calculateScore();
+   alert(`Your score is: ${score}`);
+  });
+  
+  // Reset button
+  const resetButton = document.querySelector('#btnReset');
+  resetButton.addEventListener('click', function() {
+    location.reload();
+  });
+
+  
   // call the displayQuiz function
   displayQuiz();
 });
